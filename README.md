@@ -2,5 +2,5 @@
 
 ```
 $ npm install
-$ node start qrcode.js
+$ node qrcode.js
 ```
