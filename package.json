@@ -1,0 +1,26 @@
+{
+  "name": "qrcode",
+  "version": "1.0.0",
+  "description": "",
+  "main": "qrcode.js",
+  "dependencies": {
+    "cors": "^2.8.3",
+    "express": "^4.15.2",
+    "qrcode": "^0.7.1",
+    "speakeasy": "^2.0.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/marcusferland/qrcode-generator.git"
+  },
+  "author": "Marc Ferland",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/marcusferland/qrcode-generator/issues"
+  },
+  "homepage": "https://github.com/marcusferland/qrcode-generator#readme"
+}
