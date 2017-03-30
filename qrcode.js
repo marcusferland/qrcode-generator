@@ -2,18 +2,32 @@ const qr = require('qrcode')
 const speakeasy = require('speakeasy')
 const app = require('express')()
 const cors = require('cors')
+const jwt = require('jsonwebtoken')
+const bearerToken = require('express-bearer-token')
+
 const port = 3000
+const secretKey = 'rH!y+sZcK-_a TTZyDWjPGAJ q-RF&6-GW' // get this into ZooKeeper
 
 app.use(cors())
-app.get('/:secret', (req, res) => {
+app.use(bearerToken())
 
-  const secret = req.params.secret
+app.get('/jwt', (req, res) => {
 
-  if ( ! secret ) res.status(500).json({
-    error: 'Request failed; could not generate base64 URL'
+  const token = req.token // JWT token
+  let secret
+
+  if ( ! token ) res.status(500).json({
+    error: 'Request failed; token not found'
   }).end()
 
-  const token = speakeasy.totp({
+  jwt.verify(token, secretKey, (err, decoded) => {
+    if (err) res.status(500).json({
+      error: 'Could not verify JWT'
+    })
+    else secret = decoded.secret
+  })
+
+  const totptoken = speakeasy.totp({
     secret: secret,
     encoding: 'base32'
   })
@@ -24,11 +38,11 @@ app.get('/:secret', (req, res) => {
     }).end()
     else res.status(200).json({
       url: data_url,
-      token: token
+      token: totptoken
     }).end()
   })
 
 })
 app.listen(port, () => {
-  console.log(`QR Code generator app is running at http://localhost:${port}/`);
+  console.log(`QR Code generator app is running at http://localhost:${port}/`)
 })
