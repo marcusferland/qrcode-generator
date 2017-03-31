@@ -14,33 +14,35 @@ app.use(bearerToken())
 app.get('/jwt', (req, res) => {
 
   const token = req.token // JWT token
-  let secret
+  let secret, decoded
 
-  if ( ! token ) res.status(500).json({
-    error: 'Request failed; token not found'
+  if ( ! token ) res.status(400).json({
+    error: 'Request failed; token not found in request'
   }).end()
 
-  jwt.verify(token, secretKey, (err, decoded) => {
-    if (err) res.status(500).json({
-      error: 'Could not verify JWT'
+  try {
+    decoded = jwt.verify(token, secretKey)
+
+    const totptoken = speakeasy.totp({
+      secret: decoded.user.secret,
+      encoding: 'base32'
     })
-    else secret = decoded.secret
-  })
 
-  const totptoken = speakeasy.totp({
-    secret: secret,
-    encoding: 'base32'
-  })
+    qr.toDataURL(`otpauth://totp/eSentire?secret=${decoded.user.secret}`, (err, data_url) => {
+      if (err) res.status(400).json({
+        error: 'Request failed; could not generate base64 URL'
+      }).end()
+      else res.status(200).json({
+        url: data_url,
+        token: totptoken
+      }).end()
+    })
 
-  qr.toDataURL(`otpauth://totp/SecretKey?secret=${secret}`, (err, data_url) => {
-    if (err) res.status(500).json({
-      error: 'Request failed; could not generate base64 URL'
+  } catch(err) {
+    res.status(400).json({
+      err
     }).end()
-    else res.status(200).json({
-      url: data_url,
-      token: totptoken
-    }).end()
-  })
+  }
 
 })
 app.listen(port, () => {
