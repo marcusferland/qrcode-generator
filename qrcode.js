@@ -4,11 +4,13 @@ const app = require('express')()
 const cors = require('cors')
 const jwt = require('jsonwebtoken')
 const bearerToken = require('express-bearer-token')
+const compression = require('compression')
 
 const port = 3000
 const secretKey = 'rH!y+sZcK-_a TTZyDWjPGAJ q-RF&6-GW' // get this into ZooKeeper
 
 app.use(cors())
+app.use(compression())
 app.use(bearerToken())
 
 app.get('/jwt', (req, res) => {
