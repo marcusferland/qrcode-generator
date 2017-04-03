@@ -12,6 +12,9 @@
     "qrcode": "^0.7.1",
     "speakeasy": "^2.0.0"
   },
+  "engines": {
+    "node": "7.8.0"
+  },
   "devDependencies": {},
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
